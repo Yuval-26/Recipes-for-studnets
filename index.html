@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Student Kitchen</title>
+
+  <style>
+    :root {
+      --paper: #fffaf0;
+      --ink: #342c25;
+      --red: #993e32;
+      --green: #475b40;
+      --line: #dfd3bf;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eee5d5;
+      font-family: Arial, sans-serif;
+    }
+
+    .book {
+      max-width: 1150px;
+      margin: 28px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 15px 50px #342c2514;
+    }
+
+    .cover {
+      position: relative;
+      padding: 65px 25px 55px;
+      text-align: center;
+      border-bottom: 2px solid var(--ink);
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 7px,
+        #342c2503 8px
+      );
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, summary {
+      font-family: Georgia, serif;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: clamp(48px, 9vw, 90px);
+      line-height: 1;
+      font-weight: normal;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--red);
+      font-style: italic;
+    }
+
+    .subtitle {
+      max-width: 430px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .cover-note {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 10px 20px;
+      border-top: 1px solid var(--red);
+      border-bottom: 1px solid var(--red);
+      color: var(--red);
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    main { padding: 32px; }
+
+    .intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    h2 { font-size: 30px; margin: 0 0 10px; }
+    .intro p { color: #665b50; line-height: 1.6; }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #8e816e;
+      border-radius: 6px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    fieldset {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 0;
+      padding: 0;
+      margin: 22px 0;
+    }
+
+    legend {
+      margin-bottom: 12px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: 1px solid var(--green);
+      border-radius: 30px;
+      background: transparent;
+      color: var(--green);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    button[aria-pressed="true"] {
+      background: var(--green);
+      color: white;
+    }
+
+    button:hover { box-shadow: inset 0 0 0 1px var(--green); }
+
+    :focus-visible {
+      outline: 3px solid var(--red);
+      outline-offset: 4px;
+    }
+
+    #results {
+      color: #665b50;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .recipes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+      gap: 22px;
+      align-items: start;
+    }
+
+    .recipe {
+      overflow: hidden;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .recipe-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background: #e7eadb;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .recipe[data-category="Rice"] .recipe-top { background: #f5e4bd; }
+    .recipe[data-category="Eggs"] .recipe-top { background: #f3d9ce; }
+    .recipe[data-category="Bread"] .recipe-top { background: #e8dfd3; }
+
+    .category {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .number {
+      font-family: Georgia, serif;
+      font-size: 30px;
+      color: #655343;
+    }
+
+    .recipe-body { padding: 22px; }
+    h3 { margin: 0 0 12px; font-size: 26px; font-weight: normal; }
+
+    .description {
+      color: #665b50;
+      line-height: 1.6;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: var(--green);
+      font-weight: bold;
+      line-height: 1.8;
+    }
+
+    details { border-top: 1px dashed var(--line); margin-top: 20px; }
+
+    summary {
+      padding: 16px 0 0;
+      cursor: pointer;
+      color: var(--red);
+      font-size: 18px;
+    }
+
+    h4 { margin: 22px 0 8px; }
+    ul, ol { padding-left: 22px; }
+    li { padding-left: 3px; margin-bottom: 9px; line-height: 1.6; }
+
+    .tip {
+      padding: 12px;
+      background: #f0eddf;
+      font-size: 14px;
+      line-height: 1.6;
+      border-radius: 5px;
+    }
+
+    #empty {
+      padding: 30px;
+      text-align: center;
+      border: 1px dashed #8e816e;
+      line-height: 1.7;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      margin-top: 32px;
+      border-top: 1px solid var(--line);
+      color: #665b50;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      .book { margin: 0; border: 0; }
+      main { padding: 24px 18px; }
+      .cover { padding-top: 45px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="book">
+    <header class="cover">
+      <p class="eyebrow">Good food. Small budget. Less effort.</p>
+      <h1>The Student <span>Kitchen</span></h1>
+      <p class="subtitle">
+        A little cookbook for busy days, small kitchens,
+        and people who would rather eat than wash dishes.
+      </p>
+      <p class="cover-note">EVERYDAY INGREDIENTS · SIMPLE RECIPES</p>
+    </header>
+
+    <main>
+      <div class="intro">
+        <h2>Find your next meal</h2>
+        <p>Pick a category, search, then open a recipe.</p>
+      </div>
+
+      <label for="search">Search recipes or ingredients</label>
+      <input
+        id="search"
+        type="search"
+        placeholder="Try tomato, chickpeas, or cheese..."
+        aria-controls="recipes"
+      >
+
+      <fieldset id="filters">
+        <legend>Choose a category</legend>
+        <button type="button" data-filter="All" aria-pressed="true">All recipes</button>
+        <button type="button" data-filter="Pasta" aria-pressed="false">Pasta</button>
+        <button type="button" data-filter="Rice" aria-pressed="false">Rice</button>
+        <button type="button" data-filter="Eggs" aria-pressed="false">Eggs</button>
+        <button type="button" data-filter="Bread" aria-pressed="false">Bread</button>
+        <button type="button" data-filter="Chicken" aria-pressed="false">Chicken</button>
+        <button type="button" data-filter="Sandwiches" aria-pressed="false">Sandwiches</button>
+      </fieldset>
+
+      <p id="results" role="status" aria-live="polite"></p>
+      <div id="recipes" class="recipes"></div>
+
+      <p id="empty" hidden>
+        Nothing in the cookbook matches yet.
+        Try a different ingredient or choose “All recipes”.
+      </p>
+    </main>
+
+    <footer>
+      Made for student kitchens. Works entirely offline.<br>
+      Times are approximate. Check ingredient labels for allergens.
+    </footer>
+  </div>
+
+  <template id="recipe-template">
+    <article class="recipe">
+      <div class="recipe-top">
+        <span class="category"></span>
+        <span class="number" aria-hidden="true"></span>
+      </div>
+      <div class="recipe-body">
+        <h3></h3>
+        <p class="description"></p>
+        <p class="meta"></p>
+        <details>
+          <summary>Open recipe</summary>
+          <h4>What you need</h4>
+          <ul></ul>
+          <h4>What to do</h4>
+          <ol></ol>
+          <p class="tip"></p>
+        </details>
+      </div>
+    </article>
+  </template>
+
+  <script>
+const recipes = [
+      {
+        title: "No-Fuss Tomato Pasta",
+        category: "Pasta",
+        description: "A comforting bowl made with cupboard basics.",
+        time: "20 min total",
+        effort: "10 min hands-on",
+        serves: 1,
+        ingredients: [
+          "100 g dry pasta",
+          "200 g canned chopped tomatoes",
+          "1 teaspoon olive oil",
+          "1 small garlic clove, chopped",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the pasta in a pot of boiling water following the packet instructions.",
+          "Meanwhile, warm the oil in a pan over medium-low heat. Add the garlic and stir for 30 seconds.",
+          "Add the tomatoes and simmer gently for 8–10 minutes, stirring occasionally.",
+          "Reserve a little pasta water, then drain the pasta. Stir it into the sauce.",
+          "Add a splash of the reserved water if needed. Season and serve."
+        ],
+        tip: "No garlic? Leave it out. A little dried oregano also works."
+      },
+      {
+        title: "Creamy Pea Pasta",
+        category: "Pasta",
+        description: "One pot, a handful of peas, and very little washing up.",
+        time: "15 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "100 g dry pasta",
+          "80 g frozen peas",
+          "2 tablespoons plain cream cheese",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the pasta in boiling water following the packet instructions.",
+          "Add the frozen peas for the last 3 minutes, or longer if their packet requires.",
+          "Reserve half a cup of cooking water, then drain.",
+          "Return the pasta and peas to the warm pot, off the heat.",
+          "Stir in the cream cheese and a little reserved water until creamy. Season and serve."
+        ],
+        tip: "Add the water gradually so the sauce stays creamy rather than watery."
+      },
+      {
+        title: "Tomato & Chickpea Rice",
+        category: "Rice",
+        description: "A filling one-pot meal with inexpensive pantry ingredients.",
+        time: "30 min total",
+        effort: "8 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g long-grain white rice",
+          "200 g canned chickpeas, drained and rinsed",
+          "1 tablespoon tomato paste",
+          "1 teaspoon oil",
+          "Water as directed by the rice packet",
+          "Half a teaspoon paprika",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Warm the oil in a saucepan over medium-low heat.",
+          "Stir in the tomato paste and paprika for 30 seconds.",
+          "Add the rice, chickpeas, and the water quantity stated on the rice packet. Stir.",
+          "Bring to a boil, cover, and cook on low heat for the packet's recommended time.",
+          "Check the rice is tender, then remove from the heat and rest covered for 5 minutes. Fluff and season."
+        ],
+        tip: "For leftovers, cool rice quickly, refrigerate within 1 hour, and use within 24 hours. Reheat until steaming hot."
+      },
+      {
+        title: "Easy Pea Rice",
+        category: "Rice",
+        description: "A gentle, low-effort rice bowl with a bright squeeze of lemon.",
+        time: "25 min total",
+        effort: "5 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g long-grain white rice",
+          "100 g frozen peas",
+          "1 teaspoon oil or butter",
+          "Water as directed by the rice packet",
+          "1 tablespoon lemon juice",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Put the rice and the packet's stated amount of water in a saucepan.",
+          "Bring to a boil, cover, and cook on low heat following the packet instructions.",
+          "Add the peas when the remaining cooking time matches their packet instructions. Cover again and finish cooking.",
+          "Check the rice and peas are cooked. Remove from the heat.",
+          "Stir in the oil or butter, lemon juice, salt, and pepper."
+        ],
+        tip: "Serve with canned beans for a more filling meal. Handle rice leftovers as described in the chickpea rice recipe."
+      },
+      {
+        title: "Simple Tomato Eggs",
+        category: "Eggs",
+        description: "A small-pan breakfast that works just as well for dinner.",
+        time: "20 min total",
+        effort: "8 min hands-on",
+        serves: 1,
+        ingredients: [
+          "2 eggs",
+          "200 g canned chopped tomatoes",
+          "1 teaspoon oil",
+          "Half a teaspoon paprika",
+          "Salt and pepper to taste",
+          "Bread, to serve"
+        ],
+        steps: [
+          "Warm the oil in a small frying pan over medium heat.",
+          "Add the tomatoes and paprika. Simmer for 5–7 minutes, stirring occasionally.",
+          "Make two small gaps in the sauce and crack an egg into each.",
+          "Cover with a suitable lid, lower the heat, and cook until both whites and yolks are firm.",
+          "Season and serve with bread."
+        ],
+        tip: "A pinch of chili flakes is optional if you like a little heat."
+      },
+      {
+        title: "Pan Pizza Toast",
+        category: "Bread",
+        description: "Pizza-like comfort without making dough or heating an oven.",
+        time: "12 min total",
+        effort: "5 min hands-on",
+        serves: 1,
+        ingredients: [
+          "2 slices of bread",
+          "2 tablespoons ready-to-eat tomato pasta sauce",
+          "40 g grated cheese",
+          "A pinch of dried oregano, optional"
+        ],
+        steps: [
+          "Toast one side of the bread in a dry nonstick pan over medium-low heat.",
+          "Flip the bread and lower the heat.",
+          "Spread sauce over the toasted sides and add the cheese and oregano.",
+          "Cover with a suitable lid and warm gently until the cheese melts and the bases are crisp.",
+          "Check underneath occasionally so the bread does not burn."
+        ],
+        tip: "Add a few olives or a spoonful of canned sweetcorn before the cheese."
+      },{
+        title: "Garlic & Olive Oil Spaghetti",
+        category: "Pasta",
+        description: "A simple cupboard meal with just a few ingredients.",
+        time: "15 min total",
+        effort: "8 min hands-on",
+        serves: 1,
+        ingredients: [
+          "100 g spaghetti",
+          "1 tablespoon olive oil",
+          "1 garlic clove, thinly sliced",
+          "A pinch of chili flakes, optional",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the spaghetti in boiling water following the packet instructions.",
+          "Meanwhile, put the oil and garlic in a frying pan over low heat. Warm gently for 2–3 minutes without browning the garlic.",
+          "Reserve half a cup of pasta water, then drain the spaghetti.",
+          "Add the spaghetti to the pan with 2 tablespoons of pasta water. Toss over low heat until coated.",
+          "Season and add chili flakes if you like."
+        ],
+        tip: "Garlic burns quickly. Keep the heat low and remove the pan from the heat if it starts darkening."
+      },
+      {
+        title: "Lemon & Spinach Penne",
+        category: "Pasta",
+        description: "A fresh, creamy pasta with no separate sauce to prepare.",
+        time: "15 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "100 g penne",
+          "A large handful of fresh spinach, washed",
+          "2 tablespoons plain cream cheese",
+          "1–2 teaspoons lemon juice",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the penne following the packet instructions.",
+          "Add the spinach to the pot for the final minute of cooking.",
+          "Reserve half a cup of pasta water, then drain the pasta and spinach.",
+          "Return them to the pot off the heat. Stir in the cream cheese and a splash of reserved water.",
+          "Add lemon juice a little at a time, season, and serve."
+        ],
+        tip: "Start with 1 teaspoon of lemon juice. You can always add more."
+      },
+      {
+        title: "Tuna & Sweetcorn Fusilli",
+        category: "Pasta",
+        description: "A filling pasta bowl made mostly from tins.",
+        time: "15 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "100 g fusilli",
+          "80 g canned tuna, drained",
+          "60 g canned sweetcorn, drained",
+          "1 tablespoon olive oil",
+          "1 teaspoon lemon juice",
+          "Black pepper to taste"
+        ],
+        steps: [
+          "Cook the fusilli following the packet instructions.",
+          "Reserve a little pasta water, then drain.",
+          "Return the pasta to the pot over low heat. Add the tuna, sweetcorn, oil, and 2 tablespoons of pasta water.",
+          "Stir gently until everything is hot. Remove from the heat and add the lemon juice and pepper."
+        ],
+        tip: "Use any short pasta shape you already have instead of buying fusilli."
+      },
+      {
+        title: "Tomato & Bean Macaroni",
+        category: "Pasta",
+        description: "A hearty meat-free bowl with a quick tomato sauce.",
+        time: "20 min total",
+        effort: "10 min hands-on",
+        serves: 2,
+        ingredients: [
+          "180 g macaroni",
+          "200 g canned white beans, drained and rinsed",
+          "400 g canned chopped tomatoes",
+          "1 teaspoon oil",
+          "Half a teaspoon dried oregano",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the macaroni in boiling water following the packet instructions.",
+          "Meanwhile, warm the oil in a saucepan. Add the tomatoes, beans, and oregano.",
+          "Simmer gently for 10 minutes, stirring occasionally.",
+          "Drain the macaroni and stir it into the sauce. Heat through and season."
+        ],
+        tip: "Mash a few beans into the sauce to make it thicker without cream."
+      },
+      {
+        title: "Lemon & Chickpea Basmati",
+        category: "Rice",
+        description: "Fluffy rice and chickpeas with almost no chopping.",
+        time: "25 min total",
+        effort: "5 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g basmati rice",
+          "200 g canned chickpeas, drained and rinsed",
+          "Water as directed by the rice packet",
+          "1 tablespoon olive oil",
+          "1 tablespoon lemon juice",
+          "Half a teaspoon ground cumin, optional",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Prepare the rice as directed on its packet, using the stated quantity of water.",
+          "Add the chickpeas and cumin to the pot before bringing it to a boil.",
+          "Cover and cook on low heat following the rice packet's instructions. Check the rice is tender and the chickpeas are hot.",
+          "Remove from the heat and rest covered for 5 minutes.",
+          "Fluff with a fork, then stir in the oil, lemon juice, salt, and pepper."
+        ],
+        tip: "Cool leftover rice quickly, refrigerate within 1 hour, and use within 24 hours. Reheat until steaming hot."
+      },
+      {
+        title: "Coconut & Pea Jasmine Rice",
+        category: "Rice",
+        description: "A gently creamy rice bowl with a short ingredient list.",
+        time: "25 min total",
+        effort: "6 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g jasmine rice",
+          "100 ml unsweetened canned coconut milk",
+          "Water: enough that water plus coconut milk equals the rice packet's required liquid",
+          "100 g frozen peas",
+          "Salt to taste"
+        ],
+        steps: [
+          "Check the rice packet's required liquid quantity. Measure 100 ml coconut milk, then add water to reach that total.",
+          "Put the rice and measured liquid into a saucepan. Bring gently to a simmer.",
+          "Cover and cook on low heat following the packet's timing. Add the peas when the remaining cooking time matches their packet instructions.",
+          "Check the rice is tender and the peas are cooked. If the pan dries before the rice is ready, add a small splash of hot water and continue cooking.",
+          "Remove from the heat, rest covered for 5 minutes, then fluff and season."
+        ],
+        tip: "Shake or stir the coconut milk before measuring. Refrigerate rice leftovers promptly and use within 24 hours."
+      },
+      {
+        title: "Brown Rice & Lentil Bowl",
+        category: "Rice",
+        description: "Very little preparation—let the rice cook while you do something else nearby.",
+        time: "45–50 min total",
+        effort: "7 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g brown rice",
+          "200 g canned lentils, drained and rinsed",
+          "Water as directed by the rice packet",
+          "1 tablespoon olive oil",
+          "1 tablespoon lemon juice",
+          "Half a teaspoon ground cumin",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Cook the brown rice with the packet's stated water quantity and cooking time.",
+          "During the final 5 minutes, gently stir in the lentils and cumin. Cover again and finish cooking.",
+          "Check the rice is tender and the lentils are piping hot. Add a little hot water if the rice needs longer and the pan is dry.",
+          "Remove from the heat. Stir in the oil and lemon juice, then season."
+        ],
+        tip: "Use canned lentils, not dry lentils, for this method. Refrigerate rice leftovers promptly and use within 24 hours."
+      },
+      {
+        title: "Mushroom & Cheese Short-Grain Rice",
+        category: "Rice",
+        description: "A low-effort alternative to risotto, without constant stirring.",
+        time: "30 min total",
+        effort: "10 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g plain short-grain white rice with an absorption cooking method on its packet",
+          "150 g mushrooms, cleaned and sliced",
+          "1 tablespoon oil",
+          "Water as directed by the rice packet",
+          "30 g grated hard cheese",
+          "Black pepper and salt to taste"
+        ],
+        steps: [
+          "Warm the oil in a saucepan over medium heat. Add the mushrooms and cook for 5–7 minutes, stirring occasionally.",
+          "Add the rice and the packet's stated amount of water.",
+          "Bring to a boil, cover, and cook on low heat following the packet instructions.",
+          "Check the rice is tender, then remove from the heat and rest covered for 5 minutes.",
+          "Stir in the cheese and pepper. Taste before adding salt."
+        ],
+        tip: "Choose ordinary short-grain rice with packet cooking directions, not a risotto mix. Refrigerate leftovers promptly and use within 24 hours."
+      },      {
+        title: "Turkey & Cheese Toastie",
+        category: "Sandwiches",
+        description: "Crisp bread, melted cheese, and almost no preparation.",
+        time: "10 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "2 slices of bread",
+          "60 g ready-to-eat sliced turkey",
+          "30 g cheddar or other melting cheese",
+          "1 teaspoon butter, softened",
+          "1 teaspoon mustard, optional"
+        ],
+        steps: [
+          "Spread the mustard, if using, on one slice of bread. Add the turkey and cheese, then close the sandwich.",
+          "Spread a thin layer of butter on the outside of both slices.",
+          "Place in a nonstick frying pan over medium-low heat. Cook for 3–4 minutes until the underside is golden.",
+          "Turn carefully and cook the other side for 3–4 minutes. Lower the heat and cover briefly if the cheese needs longer to melt.",
+          "Transfer to a plate, let it cool slightly, and cut in half."
+        ],
+        tip: "Use turkey labelled ready-to-eat, not raw turkey. Keep sliced meat refrigerated and follow its use-by and after-opening instructions."
+      },
+      {
+        title: "Salami, Cheese & Tomato Roll",
+        category: "Sandwiches",
+        description: "A no-cook lunch with a little crunch and plenty of flavour.",
+        time: "5 min total",
+        effort: "5 min hands-on",
+        serves: 1,
+        ingredients: [
+          "1 bread roll",
+          "40 g ready-to-eat salami",
+          "30 g sliced cheese",
+          "Half a tomato, sliced",
+          "A few washed lettuce leaves",
+          "1 teaspoon mustard or mayonnaise"
+        ],
+        steps: [
+          "Cut the roll in half and spread the mustard or mayonnaise inside.",
+          "Pat the washed lettuce dry and place it on the bottom half.",
+          "Layer on the cheese, salami, and tomato.",
+          "Close the roll and serve, or pack in a container and keep chilled."
+        ],
+        tip: "For a packed lunch, use an insulated bag with an ice pack. Keep perishable fillings refrigerated until you leave."
+      },
+      {
+        title: "Chicken & Cheese Wrap",
+        category: "Sandwiches",
+        description: "A quick way to turn safely stored cooked chicken into lunch.",
+        time: "10 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "1 large tortilla",
+          "80 g chilled, fully cooked chicken, shredded",
+          "30 g grated cheese",
+          "1 teaspoon mayonnaise",
+          "1 teaspoon mustard, optional"
+        ],
+        steps: [
+          "Spread the mayonnaise and optional mustard over the centre of the tortilla.",
+          "Add the cooked chicken and cheese, leaving space around the edges.",
+          "Fold in the sides, then roll tightly to enclose the filling.",
+          "Serve cold, or place seam-side down in a dry frying pan over medium-low heat.",
+          "If heating, turn regularly until crisp and the filling reaches 74°C in the centre. Lower the heat if the tortilla browns too quickly."
+        ],
+        tip: "Use ready-to-eat cooked chicken or leftovers refrigerated promptly and used within 3–4 days. Do not put raw chicken in this wrap."
+      },
+      {
+        title: "Beef & Cheese Pita",
+        category: "Sandwiches",
+        description: "A filling hot sandwich made with a small amount of minced beef.",
+        time: "20 min total",
+        effort: "15 min hands-on",
+        serves: 1,
+        ingredients: [
+          "1 large pita bread",
+          "100 g minced beef",
+          "30 g grated cheese",
+          "1 teaspoon oil",
+          "Half a teaspoon paprika",
+          "1 tablespoon ketchup",
+          "Black pepper to taste"
+        ],
+        steps: [
+          "Heat the oil in a frying pan over medium heat.",
+          "Add the minced beef and paprika. Break up the meat with a spatula and cook, stirring, until it reaches at least 71°C throughout using a food thermometer.",
+          "Stir in the ketchup and black pepper, then remove from the heat.",
+          "Warm the pita according to its packet instructions and carefully open a pocket.",
+          "Fill with the hot beef and cheese. Serve immediately."
+        ],
+        tip: "Wash hands and utensils after handling raw beef. Check temperature rather than relying on meat colour, and refrigerate leftovers promptly."
+      },
+      {
+        title: "Easy Egg Fried Rice",
+        category: "Rice",
+        description: "A quick rice bowl with eggs, peas, and a little soy sauce.",
+        time: "25 min total",
+        effort: "12 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g dry long-grain white rice",
+          "Water as directed by the rice packet",
+          "2 eggs",
+          "100 g frozen peas",
+          "1 tablespoon oil",
+          "1 tablespoon soy sauce"
+        ],
+        steps: [
+          "Cook the rice following its packet instructions. Meanwhile, cook the peas according to their packet and drain.",
+          "Beat the eggs in a bowl. Heat half the oil in a large nonstick frying pan over medium heat.",
+          "Add the eggs and stir until fully set. Transfer them to a clean plate.",
+          "Add the remaining oil, freshly cooked rice, and peas to the pan. Stir-fry for 2–3 minutes.",
+          "Return the eggs to the pan, add the soy sauce, and stir until everything is hot."
+        ],
+        tip: "Fresh rice makes a softer fried rice but avoids waiting for it to cool. Cool leftovers quickly, refrigerate within 1 hour, and use within 24 hours. Reheat only once until steaming hot."
+      },
+      {
+        title: "Ham & Cheese Melt",
+        category: "Sandwiches",
+        description: "A warm, crispy sandwich with a tangy pickle filling.",
+        time: "10 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "2 slices of bread",
+          "60 g ready-to-eat cooked ham",
+          "30 g cheddar cheese",
+          "1 small pickle, thinly sliced",
+          "1 teaspoon mustard",
+          "1 teaspoon softened butter"
+        ],
+        steps: [
+          "Spread mustard on the inside of one bread slice.",
+          "Add the ham, cheese, and drained pickle slices. Close the sandwich.",
+          "Spread the butter thinly over the outside of both slices.",
+          "Cook in a nonstick frying pan over medium-low heat for 3–4 minutes per side, until golden and the cheese melts.",
+          "If the bread browns before the cheese melts, lower the heat and cover briefly. Let cool slightly before eating."
+        ],
+        tip: "Use fully cooked, ready-to-eat ham. Follow its storage and after-opening instructions."
+      },
+      {
+        title: "Roast Beef & Cheddar Roll",
+        category: "Sandwiches",
+        description: "A filling no-cook lunch with crunchy lettuce and mustard.",
+        time: "5 min total",
+        effort: "5 min hands-on",
+        serves: 1,
+        ingredients: [
+          "1 bread roll",
+          "60 g ready-to-eat sliced roast beef",
+          "30 g sliced cheddar",
+          "A few washed lettuce leaves",
+          "1 teaspoon mustard",
+          "1 teaspoon mayonnaise"
+        ],
+        steps: [
+          "Cut the roll in half.",
+          "Spread mustard on one half and mayonnaise on the other.",
+          "Pat the lettuce dry and place it on the bottom half.",
+          "Layer on the roast beef and cheese, then close the roll.",
+          "Serve immediately or refrigerate in a sealed container."
+        ],
+        tip: "Choose ready-to-eat roast beef, not raw beef. Keep a packed sandwich chilled using an insulated bag and an ice pack."
+      },
+      {
+        title: "Cabbage & Carrot Rice",
+        category: "Rice",
+        description: "An inexpensive one-pot meal that makes a little cabbage go a long way.",
+        time: "30 min total",
+        effort: "10 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g long-grain white rice",
+          "150 g cabbage, thinly sliced",
+          "1 small carrot, grated",
+          "1 tablespoon oil",
+          "Water as directed by the rice packet",
+          "1 tablespoon soy sauce",
+          "Black pepper to taste"
+        ],
+        steps: [
+          "Heat the oil in a saucepan over medium heat.",
+          "Add the cabbage and carrot. Cook for 5 minutes, stirring occasionally.",
+          "Add the rice and the packet's stated amount of water. Bring to a boil.",
+          "Cover and cook on low heat following the rice packet's instructions.",
+          "Check the rice is tender. Rest off the heat, covered, for 5 minutes, then stir in the soy sauce and pepper."
+        ],
+        tip: "Add a fully cooked egg on top for a more filling meal. Cool rice leftovers quickly, refrigerate within 1 hour, and use within 24 hours."
+      },
+      {
+        title: "Smoky Bean & Corn Rice",
+        category: "Rice",
+        description: "A colourful, filling rice dish made from inexpensive tins.",
+        time: "30 min total",
+        effort: "7 min hands-on",
+        serves: 2,
+        ingredients: [
+          "150 g long-grain white rice",
+          "200 g canned kidney beans, drained and rinsed",
+          "100 g canned sweetcorn, drained",
+          "1 tablespoon tomato paste",
+          "1 teaspoon smoked paprika",
+          "1 teaspoon oil",
+          "Water as directed by the rice packet",
+          "Salt and pepper to taste"
+        ],
+        steps: [
+          "Heat the oil in a saucepan over medium-low heat.",
+          "Stir in the tomato paste and smoked paprika for 30 seconds.",
+          "Add the rice, canned beans, sweetcorn, and the water quantity stated on the rice packet.",
+          "Bring to a boil, cover, and cook on low heat following the packet instructions.",
+          "Check the rice is tender and everything is hot. Rest covered off the heat for 5 minutes, then fluff and season."
+        ],
+        tip: "Use canned kidney beans, not dried ones, for this recipe. Cool rice leftovers quickly, refrigerate within 1 hour, and use within 24 hours."
+      },
+      {
+        title: "Sticky Soy & Ginger Chicken",
+        category: "Chicken",
+        description: "Chinese-inspired chicken with a quick, glossy sauce and no deep-frying.",
+        time: "25 min total",
+        effort: "18 min hands-on",
+        serves: 2,
+        ingredients: [
+          "300 g boneless chicken breast, cut into small even pieces",
+          "1 tablespoon oil",
+          "1 garlic clove, finely chopped",
+          "1 teaspoon grated fresh ginger",
+          "1 tablespoon soy sauce",
+          "2 teaspoons honey",
+          "3 tablespoons water",
+          "1 teaspoon cornflour (cornstarch)",
+          "1 tablespoon cold water for mixing the cornflour"
+        ],
+        steps: [
+          "Mix the soy sauce, honey, and 3 tablespoons of water in a small bowl. Separately mix the cornflour with 1 tablespoon of cold water.",
+          "Heat the oil in a frying pan over medium-high heat. Add the chicken in a single layer and cook for 6–8 minutes, turning regularly.",
+          "Lower the heat to medium-low. Add the garlic and ginger and stir for 30 seconds.",
+          "Add the soy mixture and simmer gently. Check several of the largest chicken pieces reach at least 74°C in the centre using a food thermometer; continue cooking if needed.",
+          "Stir the cornflour mixture again, pour it into the pan, and simmer while stirring for 1–2 minutes until thickened."
+        ],
+        tip: "Serve with rice cooked separately. Wash hands and utensils after handling raw chicken; do not wash raw chicken. Refrigerate leftovers within 2 hours, or within 1 hour in temperatures above 32°C."
+      },
+            {
+        title: "Ham & Cheese Melt",
+        category: "Sandwiches",
+        description: "A warm, crispy sandwich with a tangy pickle filling.",
+        time: "10 min total",
+        effort: "7 min hands-on",
+        serves: 1,
+        ingredients: [
+          "2 slices of bread",
+          "60 g ready-to-eat cooked ham",
+          "30 g cheddar cheese",
+          "1 small pickle, thinly sliced",
+          "1 teaspoon mustard",
+          "1 teaspoon softened butter"
+        ],
+        steps: [
+          "Spread mustard on the inside of one bread slice.",
+          "Add the ham, cheese, and drained pickle slices. Close the sandwich.",
+          "Spread the butter thinly over the outside of both slices.",
+          "Cook in a nonstick frying pan over medium-low heat for 3–4 minutes per side, until golden and the cheese melts.",
+          "If the bread browns before the cheese melts, lower the heat and cover briefly. Let cool slightly before eating."
+        ],
+        tip: "Use fully cooked, ready-to-eat ham. Follow its storage and after-opening instructions."
+      },
+      {
+        title: "Roast Beef & Cheddar Roll",
+        category: "Sandwiches",
+        description: "A filling no-cook lunch with crunchy lettuce and mustard.",
+        time: "5 min total",
+        effort: "5 min hands-on",
+        serves: 1,
+        ingredients: [
+          "1 bread roll",
+          "60 g ready-to-eat sliced roast beef",
+          "30 g sliced cheddar",
+          "A few washed lettuce leaves",
+          "1 teaspoon mustard",
+          "1 teaspoon mayonnaise"
+        ],
+        steps: [
+          "Cut the roll in half.",
+          "Spread mustard on one half and mayonnaise on the other.",
+          "Pat the lettuce dry and place it on the bottom half.",
+          "Layer on the roast beef and cheese, then close the roll.",
+          "Serve immediately or refrigerate in a sealed container."
+        ],
+        tip: "Choose ready-to-eat roast beef, not raw beef. Keep a packed sandwich chilled using an insulated bag and an ice pack."
+      },
+      {
+        title: "Easy Sweet & Sour Chicken",
+        category: "Chicken",
+        description: "A simple takeaway-inspired dish without batter or deep-frying.",
+        time: "25 min total",
+        effort: "18 min hands-on",
+        serves: 2,
+        ingredients: [
+          "300 g boneless chicken breast, cut into small even pieces",
+          "1 bell pepper, cut into bite-sized pieces",
+          "100 g canned pineapple chunks, drained",
+          "1 tablespoon oil",
+          "2 tablespoons ketchup",
+          "1 tablespoon vinegar",
+          "1 tablespoon soy sauce",
+          "1 teaspoon sugar",
+          "4 tablespoons water",
+          "1 teaspoon cornflour (cornstarch)",
+          "1 tablespoon cold water for mixing the cornflour"
+        ],
+        steps: [
+          "Mix the ketchup, vinegar, soy sauce, sugar, and 4 tablespoons of water. In another bowl, mix the cornflour with 1 tablespoon of cold water.",
+          "Heat the oil in a large frying pan over medium-high heat. Add the chicken and cook for 6–8 minutes, turning regularly.",
+          "Add the pepper and stir-fry for 3–4 minutes.",
+          "Add the pineapple and ketchup mixture. Simmer until several of the largest chicken pieces reach at least 74°C in the centre using a food thermometer.",
+          "Stir the cornflour mixture again and add it to the pan. Simmer while stirring for 1–2 minutes until the sauce thickens."
+        ],
+        tip: "Serve with separately cooked rice or noodles. Keep raw chicken and its utensils away from ready-to-eat ingredients. Refrigerate leftovers promptly."
+      },{
+        title: "Chicken & Broccoli Stir-Fry",
+        category: "Chicken",
+        description: "A simple Chinese-inspired chicken dish with a quick garlic sauce.",
+        time: "25 min total",
+        effort: "18 min hands-on",
+        serves: 2,
+        ingredients: [
+          "300 g boneless chicken breast, cut into thin even strips",
+          "200 g frozen broccoli",
+          "1 tablespoon oil",
+          "1 garlic clove, finely chopped",
+          "1 tablespoon soy sauce",
+          "1 teaspoon sugar",
+          "4 tablespoons water",
+          "1 teaspoon cornflour (cornstarch)",
+          "1 tablespoon cold water for mixing the cornflour"
+        ],
+        steps: [
+          "Cook the frozen broccoli according to its packet instructions, then drain well.",
+          "Mix the soy sauce, sugar, and 4 tablespoons of water. Separately mix the cornflour with 1 tablespoon of cold water.",
+          "Heat the oil in a large frying pan over medium-high heat. Add the chicken and cook for 6–8 minutes, turning regularly.",
+          "Lower the heat. Add the garlic and stir for 30 seconds, then add the soy mixture. Simmer until several of the largest chicken pieces reach at least 74°C in the centre using a food thermometer.",
+          "Add the cooked broccoli. Stir the cornflour mixture again and add it to the pan. Simmer while stirring for 1–2 minutes until thickened and everything is hot."
+        ],
+        tip: "Serve with separately cooked rice. Cooking time varies with chicken thickness, so use a food thermometer rather than judging by colour alone."
+      }
+    ];
+
+const container = document.getElementById("recipes");
+const template = document.getElementById("recipe-template");
+const search = document.getElementById("search");
+const buttons = document.querySelectorAll("[data-filter]");
+const results = document.getElementById("results");
+const empty = document.getElementById("empty");
+
+let selectedCategory = "All";
+
+function addItems(list, items) {
+  items.forEach(function (text) {
+    const item = document.createElement("li");
+    item.textContent = text;
+    list.append(item);
+  });
+}
+
+const cards = recipes.map(function (recipe, index) {
+  const card = template.content.firstElementChild.cloneNode(true);
+
+  card.dataset.category = recipe.category;
+  card.querySelector(".category").textContent = recipe.category;
+  card.querySelector(".number").textContent =
+    String(index + 1).padStart(2, "0");
+  card.querySelector("h3").textContent = recipe.title;
+  card.querySelector(".description").textContent = recipe.description;
+  card.querySelector(".meta").textContent =
+    recipe.time + " · " + recipe.effort + " · Serves " + recipe.serves;
+  card.querySelector(".tip").textContent = recipe.tip;
+
+  addItems(card.querySelector("ul"), recipe.ingredients);
+  addItems(card.querySelector("ol"), recipe.steps);
+
+  container.append(card);
+
+  return {
+    element: card,
+    category: recipe.category,
+    searchText: [
+      recipe.title,
+      recipe.category,
+      recipe.description,
+      ...recipe.ingredients
+    ].join(" ").toLowerCase()
+  };
+});
+
+function filterRecipes() {
+  const terms = search.value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  let count = 0;
+
+  cards.forEach(function (card) {
+    const categoryMatches =
+      selectedCategory === "All" || card.category === selectedCategory;
+
+    const searchMatches = terms.every(function (term) {
+      return card.searchText.includes(term);
+    });
+
+    const visible = categoryMatches && searchMatches;
+    card.element.hidden = !visible;
+
+    if (visible) count++;
+  });
+
+  results.textContent =
+    count + (count === 1 ? " recipe found" : " recipes found");
+
+  empty.hidden = count !== 0;
+}
+
+buttons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    selectedCategory = button.dataset.filter;
+
+    buttons.forEach(function (item) {
+      item.setAttribute("aria-pressed", String(item === button));
+    });
+
+    filterRecipes();
+  });
+});
+
+search.addEventListener("input", filterRecipes);
+filterRecipes();
+  </script>
+</body>
+</html>
